@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+    </head>
+    <body>
+        <div id="main" class="">
+            <div class="left">
+                <div class="">系统hosts内容</div>
+                <div class="">公共</div>
+                <div class="">自定义<span @click='add_sub'>+</span></div>
+                <div class="sub_box">
+                    <ul>
+                        <li v-for='(item, index) in subs' :key='index' :id='item.id'>{{item.name}}</li>
+                        <li>xxxxxx</li>
+                        <li>yyyyyy</li>
+                    </ul>
+                </div>
+            </div>
+            <div id='right' class=""><pre>{{hosts}}</pre></div>
+        </div>
+        <div class="newHosts">
+            <div class="container">
+                <h3>新增一个hosts配置</h3>
+                <input type="text" name="" value="" placeholder="配置名称">
+            </div>
+        </div>
+        <script src="../node_modules/vue/dist/vue.global.prod.js" charset="utf-8"></script>
+        <script src="index.js" charset="utf-8"></script>
+    </body>
+</html>

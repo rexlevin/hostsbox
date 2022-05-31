@@ -1,0 +1,17 @@
+{
+  "name": "hostsbox",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "lizl6",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^19.0.1",
+    "jquery": "^3.6.0",
+    "sqlite3": "^5.0.8",
+    "vue": "^3.2.36"
+  }
+}
