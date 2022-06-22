@@ -3,30 +3,36 @@
     <head>
         <meta charset="utf-8">
         <title></title>
+        <link rel="stylesheet" href="./index.css">
     </head>
     <body>
         <div id="main" class="">
-            <div class="left">
-                <div class="">系统hosts内容</div>
-                <div class="">公共</div>
-                <div class="">自定义<span @click='add_sub'>+</span></div>
-                <div class="sub_box">
-                    <ul>
-                        <li v-for='(item, index) in subs' :key='index' :id='item.id'>{{item.name}}</li>
-                        <li>xxxxxx</li>
-                        <li>yyyyyy</li>
-                    </ul>
+            <div id="left">
+                <div class=""><span class='navi naviH1 naviChecked' @click='openHosts'>系统hosts内容</span></div>
+                <div class=""><span class='navi naviH1' @click='openCommon'>公共</span></div>
+                <div id='' class=""><span class='naviPlain'>自定义<span id='addBtn' @click='addEntry'>+</span></span></div>
+                <div id="entryBox">
+                    <span v-for='(item, index) in entries' :key='item.id' :id='item.id' @click='toggleEntry' @dblclick='activeEntry' class='navi naviH2'>{{item.name}}<span class=''></span></span>
                 </div>
             </div>
-            <div id='right' class=""><pre>{{hosts}}</pre></div>
-        </div>
-        <div class="newHosts">
-            <div class="container">
-                <h3>新增一个hosts配置</h3>
-                <input type="text" name="" value="" placeholder="配置名称">
+            <div id='right' class="">
+                <div id="editor" class=""> <textarea ref='content' readonly>{{hosts}}</textarea> </div>
+                <div id="bar" class=""><button type="button" name="button" id='hostsBtn' @click='openHostsDir'>打开Hosts</button>
+                    <button type="button" name="button" id='saveBtn' @click='saveEntry'>保存设置</button>
+                </div>
+            </div>
+            <div id="newHosts" ref='shade'>
+                <div id="container">
+                    <div><h3>新增一个hosts配置</h3></div>
+                    <div><input type="text" ref="entryName" value="" placeholder="配置名称"></div>
+                    <div class="">
+                        <button type="button" name="button" @click='addEntryConfirm'>确&nbsp;&nbsp;&nbsp;&nbsp;定</button>
+                        <button type="button" name="button" id='btnCancel' @click='addEntryCancel'>取&nbsp;&nbsp;&nbsp;&nbsp;消</button>
+                    </div>
+                </div>
             </div>
         </div>
         <script src="../node_modules/vue/dist/vue.global.prod.js" charset="utf-8"></script>
-        <script src="index.js" charset="utf-8"></script>
+        <script src="./index.js" charset="utf-8"></script>
     </body>
 </html>
