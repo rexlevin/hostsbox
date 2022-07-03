@@ -4,6 +4,14 @@ const path = require('path')
 const Store = require('electron-store');
 Store.initRenderer();
 
+// const store = new Store();
+// (function() {
+//     console.info('====' + app.getPath('userData'));
+//     if(undefined == store.get('userData')) {
+//         store.set('userData', app.getPath('userData'));
+//     }
+// })()
+
 app.whenReady().then(() => { createTray();createWindow() })
 
 app.on('window-all-closed', () => {
@@ -47,6 +55,7 @@ const trayMenuTemplate = [{
 
 // 获取app数据目录
 ipcMain.on('userdata-message', (event, args) => {
+    console.info('userData====' + app.getPath('userData'));
     event.reply('userdata-reply', app.getPath('userData'))
 });
 // 推出app

@@ -5,7 +5,8 @@ const path = require('path')
 const os = require('os')
 const fs = require('fs')
 const sqlite3 = require('sqlite3')
-const { nanoid } = require('nanoid') // nanoid是内部的函数，记得要加{}包起来，否则报错nanoid is not a function
+const { nanoid } = require('nanoid'); // nanoid是内部的函数，记得要加{}包起来，否则报错nanoid is not a function
+const { exit } = require('process');
 
 const store = new Store();
 (function() {
@@ -20,30 +21,40 @@ const store = new Store();
 contextBridge.exposeInMainWorld(
     'api', {
         test: (s) => {alert(s)},
+        createBackup: () => {createBackup()},
         openHostsDir: () => {openHostsDir()},
         hosts: () => {return readHosts()},
-        writeEntry: (content,callback) => {writeEntry(content,callback);},
+        rewriteHosts: (content,callback) => {rewriteHosts(content,callback);},
         initDB: (callback) => {initDB(callback)},
         queryData: (sql, callback) => {queryData(sql, callback)},
         insert: (sql, args) => {insert(sql, args);},
+        execSQL: (sql, args) => {execSQL(sql,args);},
         sid: () => {return nanoid()},
         exit: () => { ipcRenderer.send('exit'); }
     }
 );
 
+// 备份hosts文件到程序数据目录下
+function createBackup() {
+    let origin = getHostsPath(), target = store.get('userData') + '/hosts.bak';
+    if(fs.existsSync(target)) return;
+    fs.writeFileSync(target, fs.readFileSync(origin));
+}
+
+// 使用系统的文件管理器打开hosts文件所在目录
 function openHostsDir() {
     let hostsPath = getHostsPath();
     shell.showItemInFolder(hostsPath);
 }
 
-function writeEntry(content,callback) {
+function rewriteHosts(content,callback) {
     let hostsPath = getHostsPath();
     fs.writeFile(hostsPath, content, function(err) {
         if(err) {
             console.error('写入hosts文件出错=====' + err);
-            callback('failed');
+            if(callback) callback('failed');
         }
-        callback('success');
+        if(callback) callback('success');
     });
 }
 function readHosts() {
@@ -59,6 +70,7 @@ function readHosts() {
 
 function getHostsPath() {
     return 'windows' == platform() ? 'c:\\windows\\system32\\drivers\\etc\\hosts' : '/depot/cargo/hosts';
+    // return 'windows' == platform() ? 'c:\\windows\\system32\\drivers\\etc\\hosts' : '/etc/hosts';
 }
 
 function platform() {
@@ -69,21 +81,25 @@ function platform() {
     return 'other';
 }
 
-let dbfile;
-const sql1 = 'create table hosts_entry(id text primary key, name text comment \'条目名\', content text, state text default \'0\')';
+// let dbfile;
 function initDB(callback) {
-    if(fs.existsSync(getDbfile())) if(callback) {callback('exists');return;}
+    let sql1 = 'create table hosts_entry(id text primary key, name text comment \'条目名\', content text, state text default \'0\')';
+    if(fs.existsSync(getDbfile())) {callback('exists'); return;}
     console.info('now initialize db');
-    fs.appendFile(getDbfile(), '', (err) => {
-        if(err && callback) callback('failed')
-        let db = new sqlite3.Database(getDbfile())
-        db.serialize(() => {
-            db.run(sql1);
-        });
-        db.close();
-        if(callback) callback('success')
-    })
+
+    let db = new sqlite3.Database(getDbfile());
+    // db.serialize(() => {
+    //     db.run(sql1);
+    // });
+    // db.close();
+    // if(callback) callback('success')
+    db.run(sql1, (err) => {
+        if(err) callback('failed');
+        callback('success');
+    });
+    db.close();
 }
+
 function queryData(sql, callback) {
     let db = new sqlite3.Database(getDbfile())
     db.serialize(() => {
@@ -94,18 +110,21 @@ function queryData(sql, callback) {
     });
     db.close();
 }
-function execSQL(sql) {
+function execSQL(sql,args) {
     let db = new sqlite3.Database(getDbfile())
     db.serialize(() => {
         let stmt = db.prepare(sql);
-        stmt.run(args[i]);
+        for(let i = 0; i < args.length; i++) {
+            stmt.run(args[i]);
+        }
+        stmt.finalize();
     });
     db.close();
 }
 
 // [[id, name, content, state], [id, name, content, state], ......]
 function insert(sql, args) {
-    let db = new sqlite3.Database(getDbfile())
+    let db = new sqlite3.Database(getDbfile());
     db.serialize(() => {
         let stmt = db.prepare(sql);
         for(let i = 0; i < args.length; i++) {
