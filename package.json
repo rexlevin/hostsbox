@@ -7,7 +7,15 @@
     "start": "electron .",
     "package-win": "electron-packager ./ hostsbox-1.0.0 --overwrite --asar --platform=win32 --electron-version=19.0.1 -icon=./src/logo.png --arch=x64 --out=./dist --ignore=.git --ignore=.vscode",
     "package-linux": "electron-packager ./ hostsbox-1.0.0 --overwrite --asar --platform=linux --electron-version=19.0.1 -icon=./src/logo.png --arch=x64 --out=./dist --ignore=.git --ignore=.vscode",
-    "package-mac": ""
+    "package-mac": "",
+    "build-pack": "electron-builder --dir",
+    "build-dist": "electron-builder"
+  },
+  "build": {
+    "appId": "hostsbox-1.0.0",
+    "linux": {
+      "target": ["appimage"]
+    }
   },
   "author": "lizl6",
   "license": "ISC",

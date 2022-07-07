@@ -1,12 +1,5 @@
 (function() {
     // window.api.test('hello');
-    // window.api.initDB((ret) => {
-    //     console.info('初始化数据库==' + ret);
-    //     if('failed' == ret) {
-    //         alert('init db failed, app will terminated.');
-    //         window.api.exit();
-    //     }
-    // });
     changeBar(0);
 })()
 
@@ -69,6 +62,12 @@ const vueApp = {
         lis[1].addEventListener('click', (e) => {
             this.deleteEntry(this.choseId);
         });
+        this.$refs.entryName.addEventListener('keyup', (e) => {
+            if(e.keyCode != 13) return;
+            let entryName = this.$refs.entryName.value.trim();
+            if(undefined == entryName || '' == entryName) return;
+            this.addEntryConfirm();
+        });
     },
     methods: {
         openHostsDir() { window.api.openHostsDir(); },
@@ -76,6 +75,7 @@ const vueApp = {
             if(e.target.classList.contains('naviChecked')) return;
             let id = '0000';
             this.choseId = id;
+            console.info('==========content===' + this.entryCommon['content']);
             this.$refs.content.value = this.entryCommon['content']; //getItem(this.entries, id)['content'];
             this.$refs.content.focus();
             this.$refs.content.removeAttribute('readonly');
@@ -108,7 +108,8 @@ const vueApp = {
         addEntryCancel() { this.$refs.entryName.value = ''; this.$refs.shade.style.display = 'none'; },
         addEntryConfirm() {
             let id = window.api.sid();
-            let entryName = this.$refs.entryName.value;
+            let entryName = this.$refs.entryName.value.trim();
+            if(undefined == entryName || '' == entryName) return;
             let content = '#--------- ' + entryName + ' ---------\n';
             this.choseId = id;
             this.entries.push({'id': id, 'name': entryName, 'content': content, 'state': '0'});

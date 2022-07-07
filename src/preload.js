@@ -69,8 +69,7 @@ function readHosts() {
 }
 
 function getHostsPath() {
-    return 'windows' == platform() ? 'c:\\windows\\system32\\drivers\\etc\\hosts' : '/depot/cargo/hosts';
-    // return 'windows' == platform() ? 'c:\\windows\\system32\\drivers\\etc\\hosts' : '/etc/hosts';
+    return 'windows' == platform() ? 'c:\\windows\\system32\\drivers\\etc\\hosts' : '/etc/hosts';
 }
 
 function platform() {
