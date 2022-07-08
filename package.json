@@ -9,13 +9,21 @@
     "package-linux": "electron-packager ./ hostsbox-1.0.0 --overwrite --asar --platform=linux --electron-version=19.0.1 -icon=./src/logo.png --arch=x64 --out=./dist --ignore=.git --ignore=.vscode",
     "package-mac": "",
     "build-pack": "electron-builder --dir",
-    "build-dist": "electron-builder"
+    "build-dist:linux": "electron-builder -l",
+    "build-dist:win": "electron-builder -w"
   },
   "build": {
-    "appId": "hostsbox-1.0.0",
+    "appId": "org.lizl6.hostsbox",
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "asar": true,
+    "directories": {
+      "output": "./dist"
+    },
     "linux": {
-      "target": ["appimage"],
-      "icon": "./src/logo.png"
+      "target": ["appimage"]
+    },
+    "win": {
+      "target": ["nsis"]
     }
   },
   "author": "lizl6",
