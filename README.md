@@ -6,6 +6,8 @@
 
 我自己机器上使用utools有点小问题，utools没有独立的这个hosts工具，所以自己学着写两个一个独立的hosts小工具。
 
+程序第一次启动会把原hosts备份到程序运行的用户目录下，linux是 `~/.conf/hostsbox`
+
 # 开发
 
 ```bash

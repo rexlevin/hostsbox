@@ -1,7 +1,7 @@
 {
   "name": "hostsbox",
   "version": "1.0.0",
-  "description": "",
+  "description": "基于electron的跨平台hosts管理小工具",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
@@ -14,7 +14,8 @@
   "build": {
     "appId": "hostsbox-1.0.0",
     "linux": {
-      "target": ["appimage"]
+      "target": ["appimage"],
+      "icon": "./src/logo.png"
     }
   },
   "author": "lizl6",
