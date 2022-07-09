@@ -1,13 +1,10 @@
 {
   "name": "hostsbox",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "基于electron的跨平台hosts管理小工具",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "package-win": "electron-packager ./ hostsbox-1.0.0 --overwrite --asar --platform=win32 --electron-version=19.0.1 -icon=./src/logo.png --arch=x64 --out=./dist --ignore=.git --ignore=.vscode",
-    "package-linux": "electron-packager ./ hostsbox-1.0.0 --overwrite --asar --platform=linux --electron-version=19.0.1 -icon=./src/logo.png --arch=x64 --out=./dist --ignore=.git --ignore=.vscode",
-    "package-mac": "",
     "build-pack": "electron-builder --dir",
     "build-dist:linux": "electron-builder -l",
     "build-dist:win": "electron-builder -w"

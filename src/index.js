@@ -15,30 +15,34 @@ const vueApp = {
     },
     created() {
         window.api.createBackup();
-        window.api.initDB((ret) => {
+        window.api.initDB(this.hosts, (ret, rows) => {
             console.info('初始化数据库==' + ret);
             if('failed' == ret) {
                 alert('init db failed, app will terminated.');
                 window.api.exit();
+                return;
             }
-            if('success' == ret) {
-                // 初始化db成功，接下来初始化“公共”
-                let sql = 'insert into hosts_entry(id, name, content, state) values(\'0000\', \'公共\', ?, \'1\')';
-                window.api.insert(sql, [[window.api.hosts()]]);
-            }
-        });
-        // this.hosts = window.api.hosts();
-        window.api.queryData('select t.id, t.name, t.content, t.state from hosts_entry t', (rows) => {
             if(undefined == rows || 0 >= rows.length) return;
             for(let i = 0; i < rows.length; i++) {
                 if('0000' == rows[i]['id']) {
                     this.entryCommon = {'id': rows[i]['id'], 'name': rows[i]['name'], 'content': rows[i]['content'], 'state': rows[i]['state']};
                 } else {
                     this.entries.push({'id': rows[i]['id'], 'name': rows[i]['name'], 'content': rows[i]['content'], 'state': rows[i]['state']});
-                    // isActive = '1' == rows[i]['state'] ? true : false;
                 }
             }
         });
+        // this.hosts = window.api.hosts();
+        // window.api.queryData('select t.id, t.name, t.content, t.state from hosts_entry t', (rows) => {
+        //     if(undefined == rows || 0 >= rows.length) return;
+        //     for(let i = 0; i < rows.length; i++) {
+        //         if('0000' == rows[i]['id']) {
+        //             this.entryCommon = {'id': rows[i]['id'], 'name': rows[i]['name'], 'content': rows[i]['content'], 'state': rows[i]['state']};
+        //         } else {
+        //             this.entries.push({'id': rows[i]['id'], 'name': rows[i]['name'], 'content': rows[i]['content'], 'state': rows[i]['state']});
+        //             // isActive = '1' == rows[i]['state'] ? true : false;
+        //         }
+        //     }
+        // });
         document.onkeyup = (e) => {
             if(e.keyCode === 27) {
                 if(undefined != this.$refs.shade && this.$refs.shade.style.display == 'block') {
@@ -76,7 +80,7 @@ const vueApp = {
             let id = '0000';
             this.choseId = id;
             console.info('==========content===' + this.entryCommon['content']);
-            this.$refs.content.value = this.entryCommon['content']; //getItem(this.entries, id)['content'];
+            this.$refs.content.value = this.entryCommon['content'];
             this.$refs.content.focus();
             this.$refs.content.removeAttribute('readonly');
             for(let item of document.querySelectorAll('.navi')) { item.classList.remove('naviChecked'); }
@@ -94,11 +98,6 @@ const vueApp = {
         },
         addEntry() {
             this.$refs.shade.style.display = 'block'; this.$refs.entryName.focus();
-            // this.$refs.entryName.addEventListener('keyup', (e) => {
-            //     if(e.keyCode === 27) {
-            //         this.$refs.shade.style.display = 'none';
-            //     }
-            // });
             this.$refs.shade.addEventListener('keyup', (e) => {
                 if(e.keyCode === 27) {
                     this.$refs.shade.style.display = 'none';

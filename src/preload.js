@@ -25,7 +25,7 @@ contextBridge.exposeInMainWorld(
         openHostsDir: () => {openHostsDir()},
         hosts: () => {return readHosts()},
         rewriteHosts: (content,callback) => {rewriteHosts(content,callback);},
-        initDB: (callback) => {initDB(callback)},
+        initDB: (hosts, callback) => {initDB(hosts, callback)},
         queryData: (sql, callback) => {queryData(sql, callback)},
         insert: (sql, args) => {insert(sql, args);},
         execSQL: (sql, args) => {execSQL(sql,args);},
@@ -80,36 +80,77 @@ function platform() {
     return 'other';
 }
 
-// let dbfile;
-function initDB(callback) {
-    let sql1 = 'create table hosts_entry(id text primary key, name text comment \'条目名\', content text, state text default \'0\')';
-    if(fs.existsSync(getDbfile())) {callback('exists'); return;}
+function initDB(hosts, callback) {
+    let sqlCreate = 'create table hosts_entry(id text primary key, name text comment \'条目名\', content text, state text default \'0\')';
+    let sqlInsert = 'insert into hosts_entry(id, name, content, state) values(\'0000\', \'公共\', ?, \'1\')';
+    let sqlSelect = 'select t.id, t.name, t.content, t.state from hosts_entry t';
+    if(fs.existsSync(getDbfile())) {
+        let db = new sqlite3.Database(getDbfile());
+        db.all(sqlSelect, (err, rows) => {
+            if(err) {
+                console.error("=====queryData====error====" + err);
+                return;
+            }
+            callback('success', rows);
+        });
+        db.close();
+        callback('exists'); return;
+    }
     console.info('now initialize db');
 
     let db = new sqlite3.Database(getDbfile());
-    // db.serialize(() => {
-    //     db.run(sql1);
+    let args = [[hosts]];
+    // db.run(sqlCreate, (err) => {
+    //     if(err) callback('failed');
+    //     let stmt = db.prepare(sqlInsert);
+    //     for(let i = 0; i < args.length; i++) {
+    //         stmt.run(args[i]);
+    //     }
+    //     stmt.finalize();
+    //     callback('success');
     // });
     // db.close();
-    // if(callback) callback('success')
-    db.run(sql1, (err) => {
-        if(err) callback('failed');
-        callback('success');
+
+    db.serialize(() => {
+        db.run(sqlCreate);
+        // let stmt = db.prepare(sqlInsert);
+        // for(let i = 0; i < args.length; i++) {
+        //     stmt.run(args[i]);
+        // }
+        // stmt.finalize();
+    });
+    db.serialize(() => {
+        let stmt = db.prepare(sqlInsert);
+        for(let i = 0; i < args.length; i++) {
+            stmt.run(args[i]);
+        }
+        stmt.finalize();
+    });
+    db.all(sqlSelect, (err, rows) => {
+        if(err) {
+            console.error("=====queryData====error====" + err);
+            return;
+        }
+        callback('success', rows);
     });
     db.close();
 }
 
 function queryData(sql, callback) {
+    console.info("=====queryData====begin====");
     let db = new sqlite3.Database(getDbfile())
-    db.serialize(() => {
+    // db.serialize(() => {
         db.all(sql, (err, rows) => {
-            if(err) return;
+            if(err) {
+                console.error("=====queryData====error====" + err);
+                return;
+            }
             if(callback) callback(rows);
         });
-    });
+    // });
     db.close();
 }
-function execSQL(sql,args) {
+function execSQL(sql, args) {
     let db = new sqlite3.Database(getDbfile())
     db.serialize(() => {
         let stmt = db.prepare(sql);
