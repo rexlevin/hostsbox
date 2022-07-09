@@ -73,7 +73,7 @@ function getHostsPath() {
 }
 
 function platform() {
-    let type = os.type();
+    let type = os.type().toLowerCase();
     if (type == 'windows_nt') return "windows";
     if (type == 'linux') return 'linux';
     if (type == 'darwin') return 'darwin'

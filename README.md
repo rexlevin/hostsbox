@@ -6,7 +6,7 @@
 
 我自己机器上使用utools有点小问题，utools没有独立的这个hosts工具，所以自己边学边仿着写了这么一个独立的hosts小工具。
 
-程序第一次启动会把原hosts备份到程序运行的用户目录下，linux是 `~/.conf/hostsbox`
+程序第一次启动会把原hosts备份到程序运行的用户目录下，linux是 `~/.conf/hostsbox` ，windows是 `c:\Users\名字\AppData\Roaming\hostsbox`
 
 # 开发
 
