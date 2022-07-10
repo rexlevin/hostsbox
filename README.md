@@ -35,3 +35,9 @@ npm run build-dist
 初次接触tauri，更不熟悉rust，没能尽快搞定，最终还是继续用着庞大但是成熟的electron。
 
 等以后tauri更成熟，本地更方便了再更换成tauri吧，毕竟更小。
+
+# 截图
+
+![image-20220710104723942](https://imgbd.r-xnoro.com//image-20220710104723942.png)
+
+![image-20220710104830427](https://imgbd.r-xnoro.com//image-20220710104830427.png)
