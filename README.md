@@ -12,16 +12,17 @@
 
 ```bash
 # github
-git clone 
+git clone https://github.com/rexlevin/hostsbox.git
 # gitee
 git clone https://gitee.com/rexlevin/hostsbox.git
 
 cd hostsbox
 npm i
 
-# 打包
+# 安装electron-builder
 npm i -g electron-builder
-npm run build-dist
+# linux环境下打包
+npm run build-dist:linux
 ```
 
 # tauri
