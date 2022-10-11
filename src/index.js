@@ -14,6 +14,15 @@ const vueApp = {
         }
     },
     created() {
+        document.addEventListener('keyup', (e) => {
+            if (e.ctrlKey && e.shiftKey && (e.key == 'I' || e.key ==  'i')) {
+                window.api.devTools();
+            }
+            if (e.ctrlKey && (e.key == 'r' || e.key == 'R')) {
+                window.api.reload();
+            }
+        });
+
         window.api.createBackup();
         window.api.initDB(this.hosts, (ret, rows) => {
             console.info('初始化数据库==' + ret);
@@ -31,18 +40,6 @@ const vueApp = {
                 }
             }
         });
-        // this.hosts = window.api.hosts();
-        // window.api.queryData('select t.id, t.name, t.content, t.state from hosts_entry t', (rows) => {
-        //     if(undefined == rows || 0 >= rows.length) return;
-        //     for(let i = 0; i < rows.length; i++) {
-        //         if('0000' == rows[i]['id']) {
-        //             this.entryCommon = {'id': rows[i]['id'], 'name': rows[i]['name'], 'content': rows[i]['content'], 'state': rows[i]['state']};
-        //         } else {
-        //             this.entries.push({'id': rows[i]['id'], 'name': rows[i]['name'], 'content': rows[i]['content'], 'state': rows[i]['state']});
-        //             // isActive = '1' == rows[i]['state'] ? true : false;
-        //         }
-        //     }
-        // });
         document.onkeyup = (e) => {
             if(e.keyCode === 27) {
                 if(undefined != this.$refs.shade && this.$refs.shade.style.display == 'block') {

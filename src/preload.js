@@ -21,6 +21,8 @@ const store = new Store();
 contextBridge.exposeInMainWorld(
     'api', {
         test: (s) => {alert(s)},
+        devTools: () => {ipcRenderer.send('devTools');},
+        reload: () => {ipcRenderer.send('reload');},
         createBackup: () => {createBackup()},
         openHostsDir: () => {openHostsDir()},
         hosts: () => {return readHosts()},

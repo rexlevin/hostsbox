@@ -2,7 +2,7 @@
   "name": "hostsbox",
   "version": "1.0.1",
   "description": "基于electron的跨平台hosts管理小工具",
-  "main": "src/main.js",
+  "main": "main.js",
   "scripts": {
     "start": "electron .",
     "build-pack": "electron-builder --dir",
