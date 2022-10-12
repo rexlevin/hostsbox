@@ -21,8 +21,10 @@ npm i
 
 # 安装electron-builder
 npm i -g electron-builder
-# linux环境下打包
+# linux环境下打包，appimage
 npm run build-dist:linux
+# windows环境下打包，exe
+npm run build-dist:win
 ```
 
 # tauri
