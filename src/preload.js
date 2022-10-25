@@ -1,4 +1,4 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer, remote } = require('electron');
 const shell = require('electron').shell;
 const Store = require('electron-store');
 const path = require('path')
@@ -6,7 +6,6 @@ const os = require('os')
 const fs = require('fs')
 const sqlite3 = require('sqlite3')
 const { nanoid } = require('nanoid'); // nanoid是内部的函数，记得要加{}包起来，否则报错nanoid is not a function
-const { exit } = require('process');
 
 const store = new Store();
 (function() {
@@ -21,6 +20,12 @@ const store = new Store();
 contextBridge.exposeInMainWorld(
     'api', {
         test: (s) => {alert(s)},
+        getTitle: (val, cb) => {
+            ipcRenderer.send('title', val);
+            ipcRenderer.on('title-reply', (e, r) => {
+                cb(r);
+            });
+        },
         devTools: () => {ipcRenderer.send('devTools');},
         reload: () => {ipcRenderer.send('reload');},
         createBackup: () => {createBackup()},

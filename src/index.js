@@ -49,6 +49,11 @@ const vueApp = {
         }
     },
     mounted() {
+        // 设置title
+        window.api.getTitle('title', (v) => {
+            document.title = v;
+        });
+
         let divRightMenu = document.getElementById('rightMenu');
         let lis = divRightMenu.getElementsByTagName('li');
         lis[0].addEventListener('click', (e) => {
@@ -76,7 +81,7 @@ const vueApp = {
             if(e.target.classList.contains('naviChecked')) return;
             let id = '0000';
             this.choseId = id;
-            console.info('==========content===' + this.entryCommon['content']);
+            // console.info('==========content===' + this.entryCommon['content']);
             this.$refs.content.value = this.entryCommon['content'];
             this.$refs.content.focus();
             this.$refs.content.removeAttribute('readonly');

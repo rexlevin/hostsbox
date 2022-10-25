@@ -10,7 +10,10 @@ let win;
 const Store = require('electron-store');
 Store.initRenderer();
 
-app.whenReady().then(() => { createTray();createWindow() })
+app.whenReady().then(() => {
+    createTray();
+    createWindow();
+})
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
@@ -38,7 +41,7 @@ const createTray = () => {
     tray.setContextMenu(menu);
 }
 const trayMenuTemplate = [{
-    label: 'about',
+    label: 'About',
     type: 'normal',
     click: function() {
         dialog.showMessageBox({
@@ -48,7 +51,23 @@ const trayMenuTemplate = [{
         });
     }
 }, {
-    label: 'quit',
+    label: 'Project Repository',
+    type: 'normal',
+    click: function() {
+        let exec = require('child_process').exec
+            , locale = app.getLocale()
+            , url = ''
+        // 使用ip的话要么自己维护一个ip库放在外部（太大，没必要放项目里），要么使用第三方，都需要进行网络交互
+        // 所以这里使用一个最粗略的方式“语言环境”来判断是否是中国大陆
+        if(locale.indexOf('zh-CN') == -1) {
+            url = 'https://github.com/rexlevin/hostsbox.git'
+        } else {
+            url = 'https://gitee.com/rexlevin/hostsbox.git'
+        }
+        exec('open ' + url)
+    }
+}, {
+    label: 'Quit',
     type: 'normal',
     click: function() {
         app.quit();
@@ -57,7 +76,7 @@ const trayMenuTemplate = [{
 
 // 获取app数据目录
 ipcMain.on('userdata-message', (event, args) => {
-    console.info('userData====' + app.getPath('userData'));
+    // console.info('userData====' + app.getPath('userData'));
     event.reply('userdata-reply', app.getPath('userData'))
 });
 ipcMain.on('devTools', () => {
@@ -71,4 +90,7 @@ ipcMain.on('reload', () => {
 // 退出app
 ipcMain.on('exit', (event, args) => {
     app.quit();
+});
+ipcMain.on('title', (e, arg) => {
+    e.reply('title-reply', package.name + ' - ' + package['description'] + ' - v' + package.version);
 });
