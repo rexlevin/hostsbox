@@ -40,13 +40,13 @@ const vueApp = {
                 }
             }
         });
-        document.onkeyup = (e) => {
-            if(e.keyCode === 27) {
-                if(undefined != this.$refs.shade && this.$refs.shade.style.display == 'block') {
-                    this.$refs.shade.style.display = 'none';
-                }
-            }
-        }
+        // document.onkeyup = (e) => {
+        //     if(e.keyCode === 27) {
+        //         if(undefined != this.$refs.shade && this.$refs.shade.style.display == 'block') {
+        //             this.$refs.shade.style.display = 'none';
+        //         }
+        //     }
+        // }
     },
     mounted() {
         // 设置title
@@ -101,8 +101,12 @@ const vueApp = {
         addEntry() {
             this.$refs.shade.style.display = 'block'; this.$refs.entryName.focus();
             this.$refs.shade.addEventListener('keyup', (e) => {
-                if(e.keyCode === 27) {
+                console.info('key: ', e.key);
+                if(e.key === 'Escape') {
                     this.$refs.shade.style.display = 'none';
+                }
+                if (e.key === 'Enter' && this.$refs.entryName.value.trim() !== undefined && this.$refs.entryName.value.trim() !== '') {
+                    this.addEntryConfirm();
                 }
             });
         },
@@ -176,27 +180,34 @@ const vueApp = {
              * 2、获取公共及所有激活的entry
              * 3、将公共及所有激活entry的内容写入hosts
              */
+
             let id = e.target.id;
             this.choseId = id;
 
             let state = getItem(this.entries, id)['state'];
-            let r1 = changeState(this.entries, id, '1' == state ? '0' : '1');
-            if('failed' == r1) {
-                alert(('1' == state ? '失效' : '激活') + '当前配置失败');
-                window.api.exit();
-                return;
-            }
+            let r1 = changeState(this.entries, id, '1' === state ? '0' : '1');
+            // if('failed' == r1) {
+            //     alert(('1' == state ? '失效' : '激活') + '当前配置失败');
+            //     window.api.exit();
+            //     return;
+            // }
 
-            let sql = 'update hosts_entry set state = ? where id = ?';
-            window.api.execSQL(sql, [['1' == state ? '0' : '1', id]]);
-            console.info('entry激活入库成功');
-
+            console.info('this.entryCommon: ', this.entryCommon);
+            console.info('this.entries: ', this.entries);
             let newHosts = buildHosts(this.entryCommon, this.entries);
+            console.info('newHosts: ', newHosts);
+            const _this = this;
             window.api.rewriteHosts(newHosts, function(ret) {
                 if('failed' == ret) {
                     alert('激活配置出错');
+                    changeState(this.entries, id, '1' === state ? '0' : '1');
                     return;
                 }
+
+                let sql = 'update hosts_entry set state = ? where id = ?';
+                window.api.execSQL(sql, [['1' == state ? '0' : '1', id]]);
+                console.info('entry激活入库成功');
+
                 if('1' == state) {
                     e.target.firstElementChild.classList.remove('active');
                 } else {

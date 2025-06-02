@@ -6,6 +6,7 @@ const os = require('os')
 const fs = require('fs')
 const sqlite3 = require('sqlite3')
 const { nanoid } = require('nanoid'); // nanoid是内部的函数，记得要加{}包起来，否则报错nanoid is not a function
+const sudo = require('sudo-prompt');
 
 const store = new Store();
 (function() {
@@ -55,14 +56,40 @@ function openHostsDir() {
 }
 
 function rewriteHosts(content,callback) {
-    let hostsPath = getHostsPath();
-    fs.writeFile(hostsPath, content, function(err) {
-        if(err) {
-            console.error('写入hosts文件出错=====' + err);
-            if(callback) callback('failed');
+    const tempFile = path.join(os.tmpdir(), 'hosts.tmp');
+    fs.writeFileSync(tempFile, content);
+    // let hostsPath = getHostsPath();
+    // fs.writeFileSync(hostsPath, content);
+    let command;
+    if (os.platform() === 'win32') {
+        // Windows 下使用 type 命令将临时文件内容写入 hosts
+        command = `type "${tempFile}" > "%SystemRoot%\\System32\\drivers\\etc\\hosts"`;
+    } else {
+        // macOS/Linux 下使用 cat 命令
+        command = `cat "${tempFile}" > /etc/hosts`;
+    }
+    const options = {
+        name: 'HostsBox App', // 应用名称，会显示在密码输入对话框中
+        icns: 'logo.png', // macOS 下可指定图标路径（可选）
+    };
+    
+    sudo.exec(command, options, (error, stdout, stderr) => {
+        if (error) {
+            console.error('提权失败:', error);
+            if (callback) callback('failed');
+        } else {
+            console.log('Hosts 文件更新成功');
+            if (callback) callback('success');
         }
-        if(callback) callback('success');
     });
+
+    // fs.writeFile(hostsPath, content, function(err) {
+    //     if(err) {
+    //         console.error('写入hosts文件出错=====' + err);
+    //         if(callback) callback('failed');
+    //     }
+    //     if(callback) callback('success');
+    // });
 }
 function readHosts() {
     let content;

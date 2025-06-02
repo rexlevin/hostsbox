@@ -1,41 +1,45 @@
 {
-  "name": "hostsbox",
-  "version": "1.1.2",
-  "description": "基于electron的跨平台hosts管理小工具",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "build-pack": "electron-builder --dir",
-    "build-dist:linux": "electron-builder -l",
-    "build-dist:win": "electron-builder -w"
-  },
-  "build": {
-    "appId": "com.lizl6.hostsbox",
-    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
-    "asar": true,
-    "directories": {
-      "output": "./dist"
+    "name": "hostsbox",
+    "version": "1.2.0",
+    "description": "基于electron的跨平台hosts管理小工具",
+    "main": "main.js",
+    "engines": {
+        "node": ">=22.0.0"
     },
-    "linux": {
-      "target": [
-        "appimage"
-      ]
+    "scripts": {
+        "start": "electron . --no-sandbox",
+        "build-pack": "electron-builder --dir",
+        "build-dist:linux": "electron-builder -l",
+        "build-dist:win": "electron-builder -w"
     },
-    "win": {
-      "target": [
-        "nsis"
-      ]
+    "build": {
+        "appId": "com.lizl6.hostsbox",
+        "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+        "asar": true,
+        "directories": {
+            "output": "./dist"
+        },
+        "linux": {
+            "target": [
+                "appimage"
+            ]
+        },
+        "win": {
+            "target": [
+                "nsis"
+            ]
+        }
+    },
+    "author": "lizl6",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "electron-store": "^8.0.1",
+        "nanoid": "^3.3.4",
+        "sqlite3": "^5.0.8",
+        "sudo-prompt": "^9.2.1",
+        "vue": "^3.2.36"
+    },
+    "devDependencies": {
+        "electron": "^19.0.1"
     }
-  },
-  "author": "lizl6",
-  "license": "Apache-2.0",
-  "dependencies": {
-    "electron-store": "^8.0.1",
-    "nanoid": "^3.3.4",
-    "sqlite3": "^5.0.8",
-    "vue": "^3.2.36"
-  },
-  "devDependencies": {
-    "electron": "^19.0.1"
-  }
 }
