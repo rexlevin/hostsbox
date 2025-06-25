@@ -15,7 +15,11 @@
                 <div class=""><span class='navi naviH1' @click='openCommon'>公共<span class="active"></span></span></div>
                 <div id='' class=""><span class='naviPlain'>自定义<span id='addBtn' @click='addEntry'>+</span></span></div>
                 <div id="entryBox">
-                    <span v-for='(item, index) in entries' :key='item.id' :id='item.id' @click='toggleEntry' @dblclick='activeEntry' @contextmenu.prevent="rightMenu" class='navi naviH2'>{{item.name}}<span :class='{active:item.state == "1"}'></span></span>
+                    <span v-for='(item, index) in entries' :key='item.id' :id='item.id'
+                            @click='toggleEntry' @dblclick='activeEntry' @contextmenu.prevent="rightMenu"
+                            class='navi naviH2'>{{item.name}}
+                        <span :class='{active:item.state == "1"}'></span>
+                    </span>
                 </div>
             </div>
             <div id='right' class="">
