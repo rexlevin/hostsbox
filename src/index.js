@@ -185,7 +185,7 @@ const vueApp = {
             this.choseId = id;
 
             let state = getItem(this.entries, id)['state'];
-            let r1 = changeState(this.entries, id, '1' === state ? '0' : '1');
+            // let r1 = changeState(this.entries, id, '1' === state ? '0' : '1');
             // if('failed' == r1) {
             //     alert(('1' == state ? '失效' : '激活') + '当前配置失败');
             //     window.api.exit();
@@ -198,12 +198,17 @@ const vueApp = {
             console.info('newHosts: ', newHosts);
             const _this = this;
             window.api.rewriteHosts(newHosts, function(ret) {
-                if('failed' == ret) {
-                    alert('激活配置出错');
-                    changeState(this.entries, id, '1' === state ? '0' : '1');
+                if ('cancel' === ret.code) {
                     return;
                 }
-
+                if('failed' === ret.code) {
+                    alert('激活配置出错: ' + ret.msg);
+                    // changeState(this.entries, id, '1' === state ? '0' : '1');
+                    return;
+                }
+                // 变更左侧entry状态
+                changeState(this.entries, id, '1' === state ? '0' : '1');
+                // 写入数据库
                 let sql = 'update hosts_entry set state = ? where id = ?';
                 window.api.execSQL(sql, [['1' == state ? '0' : '1', id]]);
                 console.info('entry激活入库成功');

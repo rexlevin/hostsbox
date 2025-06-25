@@ -75,11 +75,14 @@ function rewriteHosts(content,callback) {
     
     sudo.exec(command, options, (error, stdout, stderr) => {
         if (error) {
-            console.error('提权失败:', error);
-            if (callback) callback('failed');
+            if (callback && error.message.includes('not') && error.message.includes('grant')) {
+                if (callback) callback({code: 'cancel', msg: '用户取消提权'});
+                return;
+            }
+            if (callback) callback({code: 'failed', msg: '更新hsots失败: ' + error.message});
         } else {
             console.log('Hosts 文件更新成功');
-            if (callback) callback('success');
+            if (callback) callback({code: 'success'});
         }
     });
 

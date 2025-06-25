@@ -22,8 +22,8 @@ app.on('window-all-closed', () => {
 const createWindow = () => {
     Menu.setApplicationMenu(null);
     win = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1000,
+        height: 700,
         resizable: false,
         icon: path.join(__dirname, './src/logo.png'),
         webPreferences: {
