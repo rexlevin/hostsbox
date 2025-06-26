@@ -185,7 +185,8 @@ const vueApp = {
             this.choseId = id;
 
             let state = getItem(this.entries, id)['state'];
-            // let r1 = changeState(this.entries, id, '1' === state ? '0' : '1');
+            // 变更左侧entry状态
+            let r1 = changeState(this.entries, id, '1' === state ? '0' : '1');
             // if('failed' == r1) {
             //     alert(('1' == state ? '失效' : '激活') + '当前配置失败');
             //     window.api.exit();
@@ -207,7 +208,7 @@ const vueApp = {
                     return;
                 }
                 // 变更左侧entry状态
-                changeState(this.entries, id, '1' === state ? '0' : '1');
+                // changeState(this.entries, id, '1' === state ? '0' : '1');
                 // 写入数据库
                 let sql = 'update hosts_entry set state = ? where id = ?';
                 window.api.execSQL(sql, [['1' == state ? '0' : '1', id]]);

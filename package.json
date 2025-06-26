@@ -1,6 +1,6 @@
 {
     "name": "hostsbox",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "description": "基于electron的跨平台hosts管理小工具",
     "main": "main.js",
     "engines": {
